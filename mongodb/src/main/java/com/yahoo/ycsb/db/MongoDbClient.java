@@ -26,10 +26,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoOptions;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
-import com.yahoo.ycsb.ByteArrayByteIterator;
-import com.yahoo.ycsb.ByteIterator;
-import com.yahoo.ycsb.DB;
-import com.yahoo.ycsb.DBException;
+import com.yahoo.ycsb.*;
 
 /**
  * MongoDB client for YCSB framework.
@@ -199,8 +196,8 @@ public class MongoDbClient extends DB {
 
             DBCollection collection = db.getCollection(table);
             DBObject r = new BasicDBObject().append("_id", key);
-            for (String k : values.keySet()) {
-                r.put(k, values.get(k).toArray());
+            for (Map.Entry<String, String> entry : StringByteIterator.getStringMap(values).entrySet()) {
+                r.put(entry.getKey(), entry.getValue());
             }
             WriteResult res = collection.insert(r, writeConcern);
             return res.getError() == null ? 0 : 1;
